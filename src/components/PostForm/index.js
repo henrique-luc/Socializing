@@ -10,16 +10,20 @@ import {
   FormHelperText,
   FormLabel,
   Input,
+  Textarea,
 } from "@chakra-ui/react";
-
 import ButtonComponent from "../Button";
 
-const SignupForm = () => {
-  const [userData, setUserData] = useState([]);
+const PostForm = () => {
+  const [newPost, setNewPost] = useState({});
   const [inputValidation, setInputValidation] = useState("");
+  const [textareaValidation, setTextareaValidation] = useState("");
+
+  const validation = inputValidation && textareaValidation;
 
   const schema = yup.object().shape({
-    user: yup.string().required("Username is not valid"),
+    title: yup.string().required("Title is required"),
+    content: yup.string().required("Content is required"),
   });
 
   const history = useHistory();
@@ -33,45 +37,57 @@ const SignupForm = () => {
   });
 
   const onSubmitFunction = (data) => {
-    setUserData([...userData, data]);
-    history.push("/posts");
+    setNewPost([...newPost, data]);
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmitFunction)}>
       <FormControl>
-        <FormLabel
-          htmlFor="username"
-          fontWeight="400"
-          fontSize="16px"
-          mb="13px"
-        >
-          Please enter your username
-        </FormLabel>
+        <FormLabel>Title</FormLabel>
         <Input
-          id="user"
+          id="title"
           type="text"
-          placeholder="John Doe"
-          {...register("user")}
-          value={inputValidation}
-          onChange={(e) => setInputValidation(e.target.value)}
+          placeholder="Hello World"
+          {...register("title")}
           borderColor="#777777"
           focusBorderColor="black"
           mb="20px"
+          value={inputValidation}
+          onChange={(e) => setInputValidation(e.target.value)}
         />
-        {errors.user && (
+        {errors.title && (
           <FormHelperText mb="10px" color="red">
-            {errors.user.message}
+            {errors.title.message}
+          </FormHelperText>
+        )}
+        <FormLabel>Content</FormLabel>
+        <Textarea
+          resize="none"
+          id="content"
+          type="text"
+          placeholder="Content here"
+          {...register("content")}
+          borderColor="#777777"
+          focusBorderColor="black"
+          mb="20px"
+          value={textareaValidation}
+          onChange={(e) => setTextareaValidation(e.target.value)}
+        />
+        {errors.content && (
+          <FormHelperText mb="10px" color="red">
+            {errors.content.message}
           </FormHelperText>
         )}
         <Flex flexDir="column" align="flex-end">
           <ButtonComponent
-            bg={!inputValidation ? "darkgrey" : "black"}
-            hover={{ cursor: !inputValidation ? "not-allowed" : "pointer" }}
+            bg={!validation ? "darkgrey" : "black"}
+            hover={{
+              cursor: !validation ? "not-allowed" : "pointer",
+            }}
             type="submit"
             w="fit-content"
           >
-            ENTER
+            CREATE
           </ButtonComponent>
         </Flex>
       </FormControl>
@@ -79,6 +95,4 @@ const SignupForm = () => {
   );
 };
 
-export default SignupForm;
-
-//Na hr de colocar cor no botao fazer uma validação pra ver se tem algo no userData
+export default PostForm;

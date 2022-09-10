@@ -1,5 +1,6 @@
 import { Box, Button, ButtonGroup, Center, Image } from "@chakra-ui/react";
 import { useHistory } from "react-router-dom";
+import ButtonComponent from "../../components/Button";
 
 const Home = () => {
   const history = useHistory();
@@ -10,7 +11,9 @@ const Home = () => {
         <Image src="logo.svg" />
       </Box>
       <ButtonGroup>
-        <Button onClick={() => history.push("/signup")}>Sign Up</Button>
+        <ButtonComponent onClick={() => history.push("/signup")}>
+          Sign Up
+        </ButtonComponent>
       </ButtonGroup>
     </Center>
   );
