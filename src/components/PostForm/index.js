@@ -1,10 +1,9 @@
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useHistory } from "react-router-dom";
-import { useState } from "react";
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import {
-  Box,
   Flex,
   FormControl,
   FormHelperText,
@@ -12,12 +11,25 @@ import {
   Input,
   Textarea,
 } from "@chakra-ui/react";
+
 import ButtonComponent from "../Button";
+import { useDispatch, useSelector } from "react-redux";
+import { addPost } from "../../actions/actions";
+import { v4 as uuid } from "uuid";
 
 const PostForm = () => {
-  const [newPost, setNewPost] = useState({});
+  const id = uuid();
+
+  const allUsers = useSelector(({ allusers }) => allusers);
+
+  const params = useParams();
+
+  const [newPost, setNewPost] = useState();
+
   const [inputValidation, setInputValidation] = useState("");
   const [textareaValidation, setTextareaValidation] = useState("");
+
+  const dispatch = useDispatch();
 
   const validation = inputValidation && textareaValidation;
 
@@ -25,8 +37,6 @@ const PostForm = () => {
     title: yup.string().required("Title is required"),
     content: yup.string().required("Content is required"),
   });
-
-  const history = useHistory();
 
   const {
     register,
@@ -36,9 +46,28 @@ const PostForm = () => {
     resolver: yupResolver(schema),
   });
 
+  const idOfUser = allUsers
+    .filter((user) => params.id === user.userName)
+    .map((id) => {
+      return id.userId;
+    });
+
+  const idToNumber = idOfUser[0];
+
   const onSubmitFunction = (data) => {
-    setNewPost([...newPost, data]);
+    setNewPost({
+      title: data.title,
+      content: data.content,
+      userId: idToNumber,
+      id: id,
+    });
   };
+
+  useEffect(() => {
+    if (newPost !== undefined) {
+      dispatch(addPost(newPost));
+    }
+  }, [dispatch, newPost]);
 
   return (
     <form onSubmit={handleSubmit(onSubmitFunction)}>

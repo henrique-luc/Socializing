@@ -11,7 +11,10 @@ const Home = () => {
         <Image src="logo.svg" />
       </Box>
       <ButtonGroup>
-        <ButtonComponent onClick={() => history.push("/signup")}>
+        <ButtonComponent
+          onClick={() => history.push("/signup")}
+          hover={{ bg: "#383838" }}
+        >
           Sign Up
         </ButtonComponent>
       </ButtonGroup>

@@ -2,9 +2,8 @@ import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useHistory } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
-  Box,
   Flex,
   FormControl,
   FormHelperText,
@@ -13,13 +12,22 @@ import {
 } from "@chakra-ui/react";
 
 import ButtonComponent from "../Button";
+import { useDispatch, useSelector } from "react-redux";
+import { addUser } from "../../actions/actions";
 
 const SignupForm = () => {
-  const [userData, setUserData] = useState([]);
+  const allUsers = useSelector(({ allusers }) => allusers);
+
+  const id = allUsers.length + 1;
+
+  const [userData, setUserData] = useState();
+
   const [inputValidation, setInputValidation] = useState("");
 
+  const dispatch = useDispatch();
+
   const schema = yup.object().shape({
-    user: yup.string().required("Username is not valid"),
+    userName: yup.string().required("Username is not valid"),
   });
 
   const history = useHistory();
@@ -33,9 +41,26 @@ const SignupForm = () => {
   });
 
   const onSubmitFunction = (data) => {
-    setUserData([...userData, data]);
-    history.push("/posts");
+    setUserData({ userName: data.userName, userId: id });
   };
+
+  const nameOfUsers = allUsers.map((name) => {
+    return name.userName;
+  });
+
+  useEffect(() => {
+    if (userData !== undefined) {
+      const existUsername = nameOfUsers.find(
+        (name) => name === userData.userName
+      );
+      if (existUsername === undefined) {
+        dispatch(addUser(userData));
+        history.push(`/posts/${userData.userName}`);
+      } else {
+        history.push(`/posts/${userData.userName}`);
+      }
+    }
+  }, [dispatch, history, nameOfUsers, userData]);
 
   return (
     <form onSubmit={handleSubmit(onSubmitFunction)}>
@@ -49,19 +74,19 @@ const SignupForm = () => {
           Please enter your username
         </FormLabel>
         <Input
-          id="user"
+          id="userName"
           type="text"
           placeholder="John Doe"
-          {...register("user")}
+          {...register("userName")}
           value={inputValidation}
           onChange={(e) => setInputValidation(e.target.value)}
           borderColor="#777777"
           focusBorderColor="black"
           mb="20px"
         />
-        {errors.user && (
+        {errors.userName && (
           <FormHelperText mb="10px" color="red">
-            {errors.user.message}
+            {errors.userName.message}
           </FormHelperText>
         )}
         <Flex flexDir="column" align="flex-end">

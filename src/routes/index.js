@@ -13,7 +13,7 @@ const Routes = () => {
       <Route exact path={"/signup"}>
         <Signup />
       </Route>
-      <Route exact path={"/posts"}>
+      <Route exact path={"/posts/:id"}>
         <Posts />
       </Route>
     </Switch>
