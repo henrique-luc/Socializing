@@ -8,16 +8,18 @@ import {
   FormLabel,
   Input,
   Textarea,
+  useDisclosure,
 } from "@chakra-ui/react";
 
 import ButtonComponent from "../Button";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { editOnePost } from "../../actions/actions";
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const EditPostForm = ({ postId }) => {
   const { title, content, userId, id } = postId[0];
-
-  const allUsers = useSelector(({ allusers }) => allusers);
 
   const [editPost, setEditPost] = useState({
     title: title,
@@ -39,6 +41,17 @@ const EditPostForm = ({ postId }) => {
     resolver: yupResolver(schema),
   });
 
+  const notify = () =>
+    toast.success("Post edited successfully!", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+
   const onSubmitFunction = (data) => {
     setEditPost({
       title: data.title,
@@ -46,6 +59,7 @@ const EditPostForm = ({ postId }) => {
       userId: userId,
       id: id,
     });
+    notify();
   };
 
   const dispatch = useDispatch();
@@ -86,6 +100,17 @@ const EditPostForm = ({ postId }) => {
           <ButtonComponent variant="outline" borderColor="black" type="submit">
             Save
           </ButtonComponent>
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+          />
         </Flex>
       </FormControl>
     </form>

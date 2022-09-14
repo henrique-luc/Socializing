@@ -4,14 +4,14 @@ import { useParams } from "react-router-dom";
 import DeleteModal from "../DeleteModal";
 import EditModal from "../EditModal";
 
+import moment from "moment";
+
 const CardPost = ({ post, allPosts }) => {
-  const { title, content, userId, id } = post;
+  const { title, content, userId, id, time } = post;
 
   const allUsers = useSelector(({ allusers }) => allusers);
 
   const params = useParams();
-
-  console.log(allPosts);
 
   const idOfUser = allUsers
     .filter((user) => params.id === user.userName)
@@ -24,6 +24,8 @@ const CardPost = ({ post, allPosts }) => {
   const postList = allPosts.filter((post) => post.id !== id);
 
   const postId = allPosts.filter((post) => post.id === id);
+
+  const subtractedTime = moment(time, "h:mm a").fromNow();
 
   return (
     <Box w="100%" m="0 auto 45px" border="1px solid #999999">
@@ -63,7 +65,7 @@ const CardPost = ({ post, allPosts }) => {
               </Text>
             ))}
           <Text fontSize="18px" fontWeight="700" color="#777777">
-            25 minutes ago
+            {subtractedTime}
           </Text>
         </Flex>
         <Box>

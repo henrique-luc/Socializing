@@ -1,4 +1,12 @@
-
 Responsive application
 
-User: Leapinho
+Features:
+
+1- You can create a new user or logging with a existent user.
+existent user: Leapinho;
+
+2- You can post, delete and edit;
+
+3- The timer is working;
+
+4- You can Sign Out;

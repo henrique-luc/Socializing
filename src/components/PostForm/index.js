@@ -17,6 +17,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { addPost } from "../../actions/actions";
 import { v4 as uuid } from "uuid";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+import moment from "moment";
+
 const PostForm = () => {
   const id = uuid();
 
@@ -54,18 +59,36 @@ const PostForm = () => {
 
   const idToNumber = idOfUser[0];
 
+  const notify = () =>
+    toast.success("Post successfully published!", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+
+  const time = moment().format("h:mm a");
+
   const onSubmitFunction = (data) => {
     setNewPost({
       title: data.title,
       content: data.content,
+      time: time,
       userId: idToNumber,
       id: id,
     });
+    notify();
   };
 
   useEffect(() => {
     if (newPost !== undefined) {
       dispatch(addPost(newPost));
+      setNewPost(undefined);
+      setInputValidation("");
+      setTextareaValidation("");
     }
   }, [dispatch, newPost]);
 
@@ -118,6 +141,17 @@ const PostForm = () => {
           >
             CREATE
           </ButtonComponent>
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+          />
         </Flex>
       </FormControl>
     </form>
